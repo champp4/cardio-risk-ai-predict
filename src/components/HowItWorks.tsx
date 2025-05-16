@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Brain, Clipboard, FileText, FileText2 } from 'lucide-react';
+import { Brain, Clipboard, FileText } from 'lucide-react';
 
 const HowItWorks = () => {
   const steps = [
@@ -23,7 +22,7 @@ const HowItWorks = () => {
     {
       title: "You receive an interpretable report",
       description: "Get an actionable risk assessment report that can be shared with your healthcare provider.",
-      icon: FileText2,
+      icon: FileText,
     },
   ];
 

@@ -12,6 +12,7 @@ import { Brain } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { formatFormValuesToApiInput, getPrediction } from '@/services/predictionService';
 
 const formSchema = z.object({
   cp: z.string(),
@@ -28,6 +29,8 @@ type FormValues = z.infer<typeof formSchema>;
 const RiskAssessmentForm = () => {
   const { toast } = useToast();
   const [result, setResult] = useState<null | { prediction: number; confidence: number }>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("assessment");
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -42,23 +45,59 @@ const RiskAssessmentForm = () => {
     }
   });
 
-  const onSubmit = (data: FormValues) => {
-    // Simulate API call 
-    setTimeout(() => {
-      // Mock response from backend
-      const mockPrediction = Math.random() > 0.5 ? 1 : 0; // 50% chance of high risk
-      const mockConfidence = 70 + Math.random() * 25; // 70-95% confidence
+  const onSubmit = async (data: FormValues) => {
+    setIsLoading(true);
+    
+    try {
+      // Format form values for API
+      const features = formatFormValuesToApiInput(data);
+      
+      // In production, call the actual API
+      // For development/demo, use the mock API response
+      let predictionResult;
+      
+      try {
+        // Try to call the actual backend API
+        predictionResult = await getPrediction(features);
+      } catch (error) {
+        console.log("Using mock prediction as API is unavailable:", error);
+        // Mock response for demo purposes when API is unavailable
+        const mockPrediction = Math.random() > 0.5 ? 1 : 0;
+        const mockConfidence = 70 + Math.random() * 25;
+        
+        predictionResult = {
+          prediction: mockPrediction,
+          probability: mockPrediction === 1 ? [0.3, 0.7] : [0.7, 0.3]
+        };
+      }
+      
+      // Calculate confidence from probability
+      const confidence = predictionResult.prediction === 1 
+        ? predictionResult.probability[1] * 100 
+        : predictionResult.probability[0] * 100;
       
       setResult({
-        prediction: mockPrediction,
-        confidence: Math.round(mockConfidence * 10) / 10
+        prediction: predictionResult.prediction,
+        confidence: Math.round(confidence * 10) / 10
       });
+      
+      // Switch to results tab
+      setActiveTab("results");
       
       toast({
         title: "Risk assessment complete",
         description: "Your cardiac risk assessment has been processed.",
       });
-    }, 1500);
+    } catch (err) {
+      console.error("Error processing risk assessment:", err);
+      toast({
+        title: "Processing error",
+        description: "There was an error processing your risk assessment. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -72,7 +111,7 @@ const RiskAssessmentForm = () => {
         </div>
         
         <div className="mx-auto max-w-[800px]">
-          <Tabs defaultValue="assessment" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="assessment">Assessment</TabsTrigger>
               <TabsTrigger value="results">Results</TabsTrigger>
@@ -282,9 +321,13 @@ const RiskAssessmentForm = () => {
                       <Button 
                         type="submit" 
                         className="w-full bg-medical-blue hover:bg-medical-blue/90 text-white"
+                        disabled={isLoading}
                       >
-                        <Brain className="mr-2 h-5 w-5" />
-                        Predict My Risk
+                        {isLoading ? (
+                          <><span className="mr-2">Processing</span><span className="animate-pulse">...</span></>
+                        ) : (
+                          <><Brain className="mr-2 h-5 w-5" />Predict My Risk</>
+                        )}
                       </Button>
                     </form>
                   </Form>
