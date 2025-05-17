@@ -49,7 +49,7 @@ export async function getPrediction(features: number[]): Promise<PredictionResul
  * @returns Array of numeric features in the correct order for the API
  */
 export function formatFormValuesToApiInput(formValues: Record<string, string | number>): number[] {
-  // Order matters: cp, thalach, exang, oldpeak, slope, ca, thal
+  // Order matters: cp, thalach, exang, oldpeak, slope, ca, thal - exactly as expected by Flask backend
   return [
     Number(formValues.cp),
     Number(formValues.thalach),

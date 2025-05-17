@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -31,6 +30,7 @@ const RiskAssessmentForm = () => {
   const [result, setResult] = useState<null | { prediction: number; confidence: number }>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("assessment");
+  const [apiError, setApiError] = useState<string | null>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -47,29 +47,14 @@ const RiskAssessmentForm = () => {
 
   const onSubmit = async (data: FormValues) => {
     setIsLoading(true);
+    setApiError(null);
     
     try {
       // Format form values for API
       const features = formatFormValuesToApiInput(data);
       
-      // In production, call the actual API
-      // For development/demo, use the mock API response
-      let predictionResult;
-      
-      try {
-        // Try to call the actual backend API
-        predictionResult = await getPrediction(features);
-      } catch (error) {
-        console.log("Using mock prediction as API is unavailable:", error);
-        // Mock response for demo purposes when API is unavailable
-        const mockPrediction = Math.random() > 0.5 ? 1 : 0;
-        const mockConfidence = 70 + Math.random() * 25;
-        
-        predictionResult = {
-          prediction: mockPrediction,
-          probability: mockPrediction === 1 ? [0.3, 0.7] : [0.7, 0.3]
-        };
-      }
+      // Call the API
+      const predictionResult = await getPrediction(features);
       
       // Calculate confidence from probability
       const confidence = predictionResult.prediction === 1 
@@ -90,9 +75,17 @@ const RiskAssessmentForm = () => {
       });
     } catch (err) {
       console.error("Error processing risk assessment:", err);
+      let errorMessage = "Failed to connect to prediction server. Please try again.";
+      
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+      
+      setApiError(errorMessage);
+      
       toast({
         title: "Processing error",
-        description: "There was an error processing your risk assessment. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -331,6 +324,14 @@ const RiskAssessmentForm = () => {
                       </Button>
                     </form>
                   </Form>
+                  {apiError && (
+                    <div className="mt-4 p-4 border border-medical-red/20 bg-medical-red/10 rounded-md">
+                      <p className="text-medical-red font-medium">API Error: {apiError}</p>
+                      <p className="text-sm text-gray-500 mt-1">
+                        Make sure the Flask backend is running at {config.api.baseUrl}
+                      </p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
