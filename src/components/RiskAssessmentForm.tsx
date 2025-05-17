@@ -12,6 +12,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formatFormValuesToApiInput, getPrediction } from '@/services/predictionService';
+import config from '@/config';
 
 const formSchema = z.object({
   cp: z.string(),
