@@ -23,6 +23,9 @@ const API_URL = config.api.baseUrl;
  */
 export async function getPrediction(features: number[]): Promise<PredictionResult> {
   try {
+    console.log('Sending prediction request to:', `${API_URL}/predict`);
+    console.log('Request payload:', JSON.stringify({ features }));
+    
     const response = await fetch(`${API_URL}/predict`, {
       method: 'POST',
       headers: {
@@ -36,7 +39,9 @@ export async function getPrediction(features: number[]): Promise<PredictionResul
       throw new Error(errorData.error || 'Failed to fetch prediction');
     }
 
-    return await response.json();
+    const result = await response.json();
+    console.log('Prediction result:', result);
+    return result;
   } catch (error) {
     console.error('Prediction API error:', error);
     throw error;

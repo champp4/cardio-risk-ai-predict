@@ -51,8 +51,11 @@ const RiskAssessmentForm = () => {
     setApiError(null);
     
     try {
+      console.log('Form submitted with values:', data);
+      
       // Format form values for API
       const features = formatFormValuesToApiInput(data);
+      console.log('Formatted features for API:', features);
       
       // Call the API
       const predictionResult = await getPrediction(features);
