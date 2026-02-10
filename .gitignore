@@ -22,3 +22,22 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual env
+venv/
+.env/
+
+# ML temporary files
+.ipynb_checkpoints/
+
+# OS junk
+Thumbs.db
+
+# Optional — ignore model artifacts if you ever want
+# (KEEP COMMENTED for now since we need them)
+# *.pkl
