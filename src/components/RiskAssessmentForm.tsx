@@ -141,10 +141,10 @@ const RiskAssessmentForm = () => {
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  <SelectItem value="1">1 - Typical Angina</SelectItem>
-                                  <SelectItem value="2">2 - Atypical Angina</SelectItem>
-                                  <SelectItem value="3">3 - Non-anginal Pain</SelectItem>
-                                  <SelectItem value="4">4 - Asymptomatic</SelectItem>
+                                  <SelectItem value="1">0 - Typical Angina</SelectItem>
+                                  <SelectItem value="2">1 - Atypical Angina</SelectItem>
+                                  <SelectItem value="3">2 - Non-anginal Pain</SelectItem>
+                                  <SelectItem value="4">3 - Asymptomatic</SelectItem>
                                 </SelectContent>
                               </Select>
                               <FormDescription>
@@ -245,9 +245,9 @@ const RiskAssessmentForm = () => {
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  <SelectItem value="1">1 - Upsloping</SelectItem>
-                                  <SelectItem value="2">2 - Flat</SelectItem>
-                                  <SelectItem value="3">3 - Downsloping</SelectItem>
+                                  <SelectItem value="1">0 - Upsloping</SelectItem>
+                                  <SelectItem value="2">1 - Flat</SelectItem>
+                                  <SelectItem value="3">2 - Downsloping</SelectItem>
                                 </SelectContent>
                               </Select>
                               <FormDescription>
@@ -302,9 +302,9 @@ const RiskAssessmentForm = () => {
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  <SelectItem value="3">3 - Normal</SelectItem>
-                                  <SelectItem value="6">6 - Fixed Defect</SelectItem>
-                                  <SelectItem value="7">7 - Reversible Defect</SelectItem>
+                                  <SelectItem value="3">1 - Normal</SelectItem>
+                                  <SelectItem value="6">2 - Fixed Defect</SelectItem>
+                                  <SelectItem value="7">3 - Reversible Defect</SelectItem>
                                 </SelectContent>
                               </Select>
                               <FormDescription>

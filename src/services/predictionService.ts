@@ -1,4 +1,3 @@
-
 import config from '@/config';
 
 /**
@@ -14,7 +13,7 @@ export interface PredictionResult {
   probability: number[];
 }
 
-const API_URL = config.api.baseUrl;
+const API_URL = config.api.baseUrl || 'http://localhost:5000'; // fallback in case config is missing
 
 /**
  * Sends clinical parameters to the prediction API
@@ -23,10 +22,12 @@ const API_URL = config.api.baseUrl;
  */
 export async function getPrediction(features: number[]): Promise<PredictionResult> {
   try {
-    console.log('Sending prediction request to:', `${API_URL}/predict`);
+    const endpoint = `${API_URL}/predict`;
+
+    console.log('Sending prediction request to:', endpoint);
     console.log('Request payload:', JSON.stringify({ features }));
-    
-    const response = await fetch(`${API_URL}/predict`, {
+
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -35,16 +36,16 @@ export async function getPrediction(features: number[]): Promise<PredictionResul
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to fetch prediction');
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `API Error: ${response.statusText}`);
     }
 
     const result = await response.json();
     console.log('Prediction result:', result);
     return result;
-  } catch (error) {
-    console.error('Prediction API error:', error);
-    throw error;
+  } catch (error: any) {
+    console.error('Prediction API error:', error.message || error);
+    throw new Error('Prediction request failed. Please try again later.');
   }
 }
 
@@ -54,7 +55,7 @@ export async function getPrediction(features: number[]): Promise<PredictionResul
  * @returns Array of numeric features in the correct order for the API
  */
 export function formatFormValuesToApiInput(formValues: Record<string, string | number>): number[] {
-  // Order matters: cp, thalach, exang, oldpeak, slope, ca, thal - exactly as expected by Flask backend
+  // Order matters: cp, thalach, exang, oldpeak, slope, ca, thal - must match Flask model
   return [
     Number(formValues.cp),
     Number(formValues.thalach),

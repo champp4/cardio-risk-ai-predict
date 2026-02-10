@@ -48,20 +48,23 @@ const About = () => {
               <div className="grid gap-6 md:grid-cols-3">
                 {[
                   {
-                    name: "Dr. Sarah Chen",
+                    name: "Dr. Pavan",
                     role: "Chief Medical Officer",
-                    bio: "Cardiologist with 15+ years of clinical experience and a specialist in cardiac risk assessment."
+                    
                   },
                   {
-                    name: "Rahul Sharma",
+                    name: "Dr. Santosh",
                     role: "Chief Technology Officer",
-                    bio: "ML specialist with a background in healthcare AI and experience at leading medical technology companies."
                   },
                   {
-                    name: "Dr. Michael Johnson",
+                    name: "Ms. Parvathi",
                     role: "Research Director",
-                    bio: "Leading researcher in cardiovascular disease prediction with numerous publications in top medical journals."
+                  },
+                  {
+                    name: "Ms. Deepthi",
+                    role: "Research Director",
                   }
+
                 ].map((member, index) => (
                   <div key={index} className="rounded-lg p-6 border shadow-sm bg-white">
                     <div className="h-32 w-32 rounded-full bg-medical-blue/10 mx-auto mb-4 flex items-center justify-center">
