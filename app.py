@@ -9,6 +9,7 @@ app = Flask(
     static_folder="static",
     static_url_path=""
 )
+
 CORS(app)
 
 # Load models and preprocessing objects
