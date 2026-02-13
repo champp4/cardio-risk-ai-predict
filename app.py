@@ -21,10 +21,12 @@ model = joblib.load('model.pkl')  # StackingClassifier
 # Feature order required for input
 FEATURE_NAMES = ['cp', 'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal']
 
+from flask import send_from_directory
+
 @app.route('/')
 def home():
-    return render_template('index.html')
-
+    return send_from_directory(app.static_folder, "index.html")
+    
 @app.route('/status', methods=['GET'])
 def status():
     return jsonify({"message": "Server is up!"})
